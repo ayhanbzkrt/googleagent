@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google AI Agents - Canavar Seviye Portal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+        
+        :root {
+            --primary-color: #4285f4;
+            --secondary-color: #34a853;
+            --accent-color: #fbbc05;
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-color: #3c4043;
+            --heading-color: #1a73e8;
+            --shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+            --border-radius: 20px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.8;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            background: linear-gradient(135deg, #e6e9f0 0%, #eef1f5 100%);
+            opacity: 0.8;
+        }
+
+        .background-animation .dot {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            animation: moveDot 20s infinite ease-in-out;
+        }
+
+        @keyframes moveDot {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(100vw, 50vh); background-color: var(--secondary-color); }
+            50% { transform: translate(50vw, 100vh); background-color: var(--accent-color); }
+            75% { transform: translate(0, 50vh); background-color: var(--primary-color); }
+            100% { transform: translate(0, 0); }
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(66, 133, 244, 0.9);
+            color: white;
+            padding: 1.5rem 3rem;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+            animation: slideInDown 0.8s ease-out;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .nav {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        .nav a.active {
+            color: var(--accent-color);
+        }
+
+        .nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav a:hover, .nav a.active {
+            color: var(--accent-color);
+        }
+
+        .nav a:hover::after, .nav a.active::after {
+            width: 100%;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 12rem 4rem 6rem;
+        }
+
+        section {
+            padding: 8rem 0;
+            opacity: 0;
+            transform: translateY(60px);
+            transition: opacity 1s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            min-height: 70vh;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h2 {
+            font-size: 4rem;
+            color: var(--heading-color);
+            text-align: center;
+            margin-bottom: 5rem;
+            position: relative;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 6px;
+            background-color: var(--secondary-color);
+            border-radius: 5px;
+        }
+        
+        h3 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        h4 {
+            font-size: 1.8rem;
+            color: #555;
+            margin-bottom: 1.5rem;
+        }
+
+        .intro-section {
+            text-align: center;
+            padding: 15rem 0;
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('https://www.gstatic.com/devrel-devsite/prod/v34a9057b561c16260a1d4791e847c2b6045501f2f09d846c24383427f711b7d5/google/images/social-media-google-logo.png') no-repeat center center;
+            background-size: 15%;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            animation: fadeIn 1.5s ease-in-out;
+            margin-top: 1rem;
+        }
+        
+        .intro-section h1 {
+            font-size: 4.5rem;
+            color: var(--heading-color);
+            margin-bottom: 2rem;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            animation: pulse 2s infinite;
+        }
+        
+        .intro-section p {
+            font-size: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            padding: 4rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 4rem;
+            position: relative;
+            overflow: hidden;
+            border-left: 8px solid var(--primary-color);
+        }
+
+        .card p {
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            color: #555;
+        }
+        
+        .visual-aid {
+            text-align: center;
+            margin: 3rem 0;
+            padding: 2rem;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            border: 1px dashed #ccc;
+        }
+        
+        .visual-aid img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .simulation-container {
+            margin-top: 4rem;
+            padding: 3rem;
+            border-radius: var(--border-radius);
+            background-color: #e3f2fd;
+            border: 2px solid var(--primary-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .simulation-container h3 {
+            font-size: 2.2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .simulation-flow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 3rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .flow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 180px;
+            transition: transform 0.3s ease;
+        }
+
+        .flow-step:hover {
+            transform: translateY(-15px);
+        }
+        
+        .flow-icon {
+            width: 100px;
+            height: 100px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            font-size: 3rem;
+            color: var(--primary-color);
+        }
+        
+        .flow-step span {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .flow-arrow {
+            font-size: 4rem;
+            color: #ccc;
+            animation: moveArrow 2s infinite ease-in-out;
+            margin: 0 1rem;
+        }
+        
+        .simulation-info {
+            font-style: italic;
+            margin-top: 2rem;
+            text-align: center;
+            color: #777;
+        }
+
+        .simulation-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .simulation-controls input, .simulation-controls button, .simulation-controls select {
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .simulation-controls button {
+            background-color: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            border: none;
+            font-weight: 600;
+        }
+
+        .simulation-controls button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-5px);
+        }
+
+        .simulation-output {
+            margin-top: 3rem;
+            background-color: #fff;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
+            white-space: pre-wrap;
+            min-height: 150px;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 4rem;
+            margin-top: 4rem;
+        }
+        
+        .tool-card {
+            background-color: #f8f9fa;
+            border: 2px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            padding: 3rem;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            text-align: center;
+            position: relative;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-20px);
+            box-shadow: var(--shadow);
+        }
+
+        .tool-card h4 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .tool-card-description {
+            font-size: 1.1rem;
+            color: #666;
+            min-height: 120px;
+            line-height: 1.6;
+        }
+        
+        .tool-card-simulation-area {
+            margin-top: 3rem;
+            padding-top: 3rem;
+            border-top: 2px dashed #ccc;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 4rem;
+            background-color: var(--heading-color);
+            color: white;
+            margin-top: 8rem;
+            font-size: 1.1rem;
+        }
+        
+        .footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        
+        .footer a:hover {
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                padding: 1.5rem 1rem;
+            }
+
+            .nav {
+                margin-top: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+
+            h1 {
+                font-size: 3rem;
+            }
+            
+            h2 {
+                font-size: 3rem;
+            }
+            
+            h3 {
+                font-size: 2rem;
+            }
+            
+            .simulation-flow {
+                flex-direction: column;
+            }
+            
+            .flow-arrow {
+                transform: rotate(90deg);
+                margin: 1rem 0;
+                animation: none;
+            }
+            
+            .container {
+                padding: 10rem 2rem 4rem;
+            }
+        }
+
+        /* Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes moveArrow {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(20px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-animation"></div>
+
+    <header class="header">
+        <h1>Google AI Agents</h1>
+        <nav class="nav">
+            <a href="#intro" class="nav-link">Giriş</a>
+            <a href="#agent-nedir" class="nav-link">Agent'lar</a>
+            <a href="#vs-models" class="nav-link">Agents vs. Modeller</a>
+            <a href="#mimariler" class="nav-link">Mimariler</a>
+            <a href="#tools" class="nav-link">Araçlar</a>
+            <a href="#ogrenme" class="nav-link">Öğrenme</a>
+            <a href="#ozet" class="nav-link">Özet</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        
+        <section id="intro" class="intro-section visible">
+            <h1>Google AI Agents</h1>
+            <p>
+                Bu interaktif portal, Google'ın "Agents" teknik dokümanını, her detayıyla, canlı ve deneyimsel bir yolculuğa dönüştürüyor. AI agent'ların kalbine inin ve karmaşık teknolojiyi somut simülasyonlarla keşfedin.
+            </p>
+        </section>
+        
+        <hr>
+
+        <section id="agent-nedir" class="scroll-animation">
+            <h2>AI Agent'ın Tanımı ve Amacı</h2>
+            <div class="card">
+                <p>Bir **Üretken AI (Generative AI) agent'ı**, kendi başına bir hedefe ulaşmak için dış dünyayı gözlemleyebilen, planlar yapabilen ve harekete geçebilen otonom bir uygulamadır. Tıpkı bir insan gibi, bir agent da mevcut bilgilerini pekiştirmek veya bir eylem gerçekleştirmek için harici **araçları** kullanmak üzere eğitilebilir.</p>
+                <p>Bu yetenek, sadece mantık yürütmekle kalmayıp, aynı zamanda karmaşık görevleri kendi kendine planlayıp yürütebilmesinden gelir. Bu sayede, temel bir dil modelinin ötesine geçerek dinamik ve proaktif bir hale gelir.</p>
+                
+                <div class="simulation-container">
+                    <h3>🔍 Senaryo 1: Dinamik Bir Uçuş Agent'ı</h3>
+                    <p>Bir agent'ın nasıl bir planlama ve eylem döngüsüne girdiğini görmek için aşağıdaki senaryoyu kullanın.</p>
+                    <div class="simulation-controls">
+                        <input type="text" id="flightQuery" placeholder="Örn: 'Austin'den Zürih'e önümüzdeki cuma günü uçuş ara.'">
+                        <button onclick="runFlightSimulation()">Agent'ı Çalıştır</button>
+                    </div>
+                    <div id="flightOutput" class="simulation-output" style="opacity: 0;"></div>
+                </div>
+            </div>
+        </section>
+        
+        <hr>
+        
+        <section id="vs-models" class="scroll-animation">
+            <h2>Agents vs. Modeller</h2>
+            <div class="card">
+                <p>Agent'lar ve modeller arasındaki en temel fark, bir agent'ın **otonom** olması ve **araçları** kullanabilmesidir. Bir model sadece bir çıktı üretirken, bir agent bu çıktıyı bir amaca ulaşmak için bir eylem olarak kullanır. Bu tablo, iki kavram arasındaki farkları detaylandırmaktadır.</p>
+                
+                <div class="simulation-container">
+                    <h3>📊 Karşılaştırma Simülasyonu</h3>
+                    <div class="vs-table">
+                        <div class="column">
+                            <h4>Modeller</h4>
+                            <ul id="modelList">
+                                <li>Bilgi, sadece eğitim verisiyle sınırlıdır.</li>
+                                <li>Tek seferlik yanıt verir.</li>
+                                <li>Araç kullanma yeteneği yoktur.</li>
+                                <li>Sadece prompt'a göre çalışır.</li>
+                            </ul>
+                        </div>
+                        <div class="column">
+                            <h4>Agents</h4>
+                            <ul id="agentList">
+                                <li>Bilgi, harici sistemlerden alınarak genişletilebilir.</li>
+                                <li>Çok adımlı (multi-turn) görevleri yönetir.</li>
+                                <li>Mimariye entegre edilmiş araçlar kullanır.</li>
+                                <li>Akıl yürütme frameworklerini (ReAct) kullanır.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="simulation-controls">
+                        <button onclick="runVsSimulation()">Farkları Vurgula</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="mimariler" class="scroll-animation">
+            <h2>Bilişsel Mimariler: Agent'ın Beyni</h2>
+            <div class="card">
+                <p>Bir agent'ın beynine benzeyen **bilişsel mimari**, onun davranışını, akıl yürütme süreçlerini ve karar alma mekanizmasını oluşturan temel bileşenlerden oluşur. Bu mimari, genellikle bir **dil modeli**, **araçlar** ve **orkestrasyon katmanı**ndan meydana gelir.</p>
+                
+                <div class="visual-aid">
+                    <img src="https://i.imgur.com/uTj660O.png" alt="Agent Mimarisi">
+                    <p><sub>Görsel: Genel bir agent mimarisi ve temel bileşenleri.</sub></p>
+                </div>
+
+                <div class="simulation-container">
+                    <h3>🧠 Senaryo 2: ReAct Akıl Yürütmesi</h3>
+                    <p>ReAct (Reasoning and Acting) framework'ü, bir agent'ın nasıl "düşünce" ürettiğini ve buna göre bir "eylem" gerçekleştirdiğini adım adım gösterir.</p>
+                    <div class="simulation-flow">
+                        <div class="flow-step">
+                            <div class="flow-icon">💬</div>
+                            <span>Sorgu</span>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">
+                            <div class="flow-icon">🤔</div>
+                            <span>Düşünce</span>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">
+                            <div class="flow-icon">🛠️</div>
+                            <span>Eylem</span>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">
+                            <div class="flow-icon">📜</div>
+                            <span>Gözlem</span>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">
+                            <div class="flow-icon">🚀</div>
+                            <span>Nihai Yanıt</span>
+                        </div>
+                    </div>
+                    <div class="simulation-controls">
+                         <button onclick="runReActSimulation()">ReAct Döngüsünü Başlat</button>
+                    </div>
+                    <div id="reactOutput" class="simulation-output" style="opacity: 0;"></div>
+                </div>
+            </div>
+        </section>
+        
+        <hr>
+
+        <section id="tools" class="scroll-animation">
+            <h2>Araçlar: Agent'ın Dış Dünya ile Etkileşimi</h2>
+            <p>Dil modelleri, dış dünya ile doğrudan etkileşime giremez. Bu boşluğu, agent'ların harici sistemlerle bağlantı kurmasını sağlayan araçlar doldurur. Google modellerinin desteklediği 3 ana araç türü vardır: **Uzantılar**, **Fonksiyonlar** ve **Veri Depoları**.</p>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <h4>Uzantılar (Extensions)</h4>
+                    <div class="tool-card-description">
+                        <p>Uzantılar, bir API ile agent arasında köprü kurar. Agent, hangi API'yi ne zaman çağıracağını kendisi belirler ve API çağrısı, agent tarafında doğrudan gerçekleşir. Bu, multi-hop (çok adımlı) planlama gerektiren karmaşık görevler için idealdir.</p>
+                    </div>
+                    <div class="tool-card-simulation-area">
+                        <h3>🌤️ Senaryo 3: Hava Durumu Uzantısı</h3>
+                        <p>Bir uzantının nasıl çalıştığını görmek için aşağıdaki simülasyonda bir şehir sorgulayın. Agent, aracı kullanarak gerçek zamanlı veriye erişecektir.</p>
+                        <div class="simulation-controls">
+                            <input type="text" id="weatherCity" placeholder="Şehir adı girin (örn: İstanbul)">
+                            <button onclick="runExtensionSimulation()">Hava Durumunu Sorgula</button>
+                        </div>
+                        <div id="weatherOutput" class="simulation-output" style="opacity: 0;"></div>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <h4>Fonksiyonlar (Functions)</h4>
+                    <div class="tool-card-description">
+                        <p>Fonksiyonlar, API çağrısı mantığını **istemci tarafına** devreder. Agent, yalnızca API çağrısı için gereken parametreleri üretir. Bu parametreler, istemci uygulamasına gönderilir ve gerçek API çağrısı istemci tarafından yapılır. Bu yaklaşım, güvenlik kısıtlamaları veya özel veri işleme gerektiren durumlar için idealdir.</p>
+                    </div>
+                    <div class="tool-card-simulation-area">
+                        <h3>🛒 Senaryo 4: Akıllı Alışveriş Asistanı</h3>
+                        <p>Agent'ın, karmaşık bir isteği nasıl yapılandırılmış bir JSON çıktısına dönüştürdüğünü izleyin. Bu çıktı daha sonra bir dış sistem tarafından işlenir.</p>
+                        <div class="simulation-controls">
+                            <input type="text" id="shoppingQuery" placeholder="Örn: 'Anneler Günü için çiçek ve çikolata al.'">
+                            <button onclick="runFunctionSimulation()">Agent'ı Çalıştır</button>
+                        </div>
+                        <div id="shoppingOutput" class="simulation-output" style="opacity: 0;"></div>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <h4>Veri Depoları (Data Stores)</h4>
+                    <div class="tool-card-description">
+                        <p>Veri Depoları, agent'lara güncel ve özel verilere erişim sağlar. Bu veriler (PDF, belgeler, web siteleri vb.) bir vektör veritabanında saklanır. Agent, kullanıcı sorgusuyla eşleşen veriyi bu depodan çeker ve yanıtını bu bilgiye dayandırır. Bu yaklaşım **RAG (Retrieval Augmented Generation)** olarak bilinir.</p>
+                    </div>
+                    <div class="tool-card-simulation-area">
+                        <h3>📚 Senaryo 5: Bilgi Bankası Sorgulama</h3>
+                        <p>Agent'ın, şirketinizin dokümanlarını içeren bir veri deposundan bilgi çektiği bir senaryoyu deneyimleyin.</p>
+                        <div class="simulation-controls">
+                            <input type="text" id="policyQuery" placeholder="Örn: 'İşe alım sürecindeki adımlar nelerdir?'">
+                            <button onclick="runDataStoreSimulation()">Sorgula</button>
+                        </div>
+                        <div id="policyOutput" class="simulation-output" style="opacity: 0;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="ogrenme" class="scroll-animation">
+            <h2>Model Performansını Artırmak için Hedefli Öğrenme</h2>
+            <div class="card">
+                <p>Bir modelin doğru araçları doğru zamanda kullanmasını sağlamak için üç ana öğrenme yaklaşımı vardır. Bu yaklaşımları bir şefin uzmanlaşmasına benzeterek açıklayabiliriz.</p>
+                <div class="simulation-container">
+                    <h3>👩‍🍳 Senaryo 6: Şefin Öğrenme Yöntemleri</h3>
+                    <p>Aşağıdaki seçeneklerden birini seçerek, bir agent'ın farklı öğrenme yaklaşımlarını nasıl benimsediğini görün.</p>
+                    <div class="simulation-controls">
+                        <select id="learningMethod">
+                            <option value="in-context">1. Yerinde Öğrenme (In-context learning)</option>
+                            <option value="retrieval">2. Geri Çağırmaya Dayalı Öğrenme (Retrieval-based learning)</option>
+                            <option value="fine-tuning">3. İnce Ayar (Fine-tuning based learning)</option>
+                        </select>
+                        <button onclick="runLearningSimulation()">Simülasyonu Başlat</button>
+                    </div>
+                    <div id="learningOutput" class="simulation-output" style="opacity: 0;"></div>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="ozet" class="scroll-animation">
+            <h2>Özet ve Gelecek Vizyonu</h2>
+            <div class="card">
+                <p>Agent'lar, dil modellerinin yeteneklerini araçları kullanarak gerçek zamanlı bilgilere erişerek, gerçek dünya eylemleri önererek ve karmaşık görevleri otonom bir şekilde planlayıp yürüterek genişletir. Bu yapının merkezinde akıl yürütme becerisi, çevresel araçlara erişim ve orkestrasyon katmanı bulunur.</p>
+                <p>Gelecekte, **"agent zincirleme"** (bir görevi tamamlamak için birden fazla agent'ın bir araya gelmesi) ve **"uzman agent karışımı"** (her biri farklı bir alanda uzmanlaşmış agent'ların iş birliği) gibi yaklaşımlar daha da önem kazanacaktır. Bu, her biri belirli bir alanda uzmanlaşmış agent'lar birleştirilerek, çeşitli endüstrilerde olağanüstü sonuçlar elde etmenin yolunu açacaktır.</p>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Google AI Agents Portal | Geliştiren: <a href="https://www.linkedin.com/in/ayhanbozkurt/" target="_blank">Ayhan Bozkurt</a></p>
+    </footer>
+
+    <script>
+        // Arka plan animasyonu için dinamik noktalar oluşturma
+        const bgAnimation = document.querySelector('.background-animation');
+        for (let i = 0; i < 50; i++) {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            dot.style.top = `${Math.random() * 100}vh`;
+            dot.style.left = `${Math.random() * 100}vw`;
+            dot.style.animationDelay = `${Math.random() * 10}s`;
+            bgAnimation.appendChild(dot);
+        }
+
+        // Sayfa kaydırma animasyonları için IntersectionObserver
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    const id = entry.target.id;
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${id}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, { threshold: 0.2 });
+        sections.forEach(section => observer.observe(section));
+
+        // Senaryo 1: Uçuş Bulma Simülasyonu
+        function runFlightSimulation() {
+            const query = document.getElementById('flightQuery').value.trim();
+            const outputDiv = document.getElementById('flightOutput');
+            outputDiv.style.opacity = 0;
+            outputDiv.innerHTML = '';
+
+            if (query === '') {
+                outputDiv.style.opacity = 1;
+                outputDiv.innerHTML = "Lütfen bir sorgu girin.";
+                return;
+            }
+
+            const steps = [
+                `**Kullanıcı Sorgusu:** "${query}"`,
+                `**Akıl Yürütme (Planlama):** "Bu bir uçuş arama isteği. Dış dünyadan güncel uçuş verisi almak için bir araca ihtiyacım var."`,
+                `**Eylem:** 'Uçuş Arama' aracını çağır. Parametreler: {kalkış: 'Austin', varış: 'Zürih', tarih: 'cuma'}.`,
+                `**Gözlem (Sonuç):** "Uçuş Arama aracı, mevcut uçuş seçeneklerini API'den başarıyla döndürdü."`,
+                `**Nihai Yanıt (Özetleme):** "Austin'den Zürih'e önümüzdeki Cuma günü için birkaç uçuş seçeneği bulundu. İlgilenebilecekleriniz: [Uçuş 1, Uçuş 2, ...]"`,
+            ];
+
+            let stepIndex = 0;
+            const interval = setInterval(() => {
+                if (stepIndex < steps.length) {
+                    outputDiv.innerHTML += `<p style="margin-bottom: 0.8rem; animation: fadeIn 0.5s ease-in-out;">${steps[stepIndex]}</p>`;
+                    outputDiv.style.opacity = 1;
+                    stepIndex++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 2000);
+        }
+
+        // Senaryo 2: ReAct Simülasyonu
+        function runReActSimulation() {
+            const outputDiv = document.getElementById('reactOutput');
+            outputDiv.style.opacity = 0;
+            outputDiv.innerHTML = '';
+
+            const reActSteps = [
+                `**Kullanıcı Sorgusu:** "Yarınki hava durumu nasıl olacak? Sence şemsiye almalı mıyım?"`,
+                `**Düşünce:** Hava durumu bilgisi almak için 'HavaDurumuSorgulama' aracını kullanmalıyım.`,
+                `**Eylem:** HavaDurumuSorgulama(şehir: Ankara)`,
+                `**Gözlem:** Hava durumu aracı: "Ankara'da yarın hava parçalı bulutlu, %60 yağmur olasılığı var."`,
+                `**Düşünce:** Yağmur olasılığı yüksek, bu yüzden şemsiye tavsiye etmeliyim.`,
+                `**Eylem:** Yanıt oluştur.`,
+                `**Gözlem:** "Hava durumu bilgisine göre yanıt başarıyla oluşturuldu."`,
+                `**Nihai Yanıt:** "Ankara'da yarın %60 yağmur olasılığı var. Şemsiye almanız iyi olur."`
+            ];
+
+            let reActIndex = 0;
+            const reActInterval = setInterval(() => {
+                if (reActIndex < reActSteps.length) {
+                    outputDiv.innerHTML += `<p style="margin-bottom: 0.8rem; animation: fadeIn 0.5s ease-in-out;">${reActSteps[reActIndex]}</p>`;
+                    outputDiv.style.opacity = 1;
+                    reActIndex++;
+                } else {
+                    clearInterval(reActInterval);
+                }
+            }, 1500);
+        }
+
+        // Senaryo 3: Uzantılar Simülasyonu
+        function runExtensionSimulation() {
+            const city = document.getElementById('weatherCity').value.trim();
+            const outputDiv = document.getElementById('weatherOutput');
+            outputDiv.style.opacity = 0;
+            outputDiv.innerHTML = '';
+            
+            if (city === '') {
+                outputDiv.style.opacity = 1;
+                outputDiv.innerHTML = "Lütfen bir şehir adı girin.";
+                return;
+            }
+            
+            outputDiv.style.opacity = 1;
+            outputDiv.innerHTML = `
+                <p>🔍 **Adım 1:** Agent, hava durumu aracının uzantısını kullanarak API çağrısını başlatıyor...</p>
+                <p>🌐 **Adım 2:** Agent, dış dünyaya bağlanıyor ve veriyi çekiyor...</p>
+            `;
+            setTimeout(() => {
+                const weather = Math.floor(Math.random() * 10) + 15;
+                const status = ['güneşli', 'parçalı bulutlu', 'yağmurlu', 'karlı'][Math.floor(Math.random() * 4)];
+                outputDiv.innerHTML += `<p>✅ **Adım 3:** API'den gelen sonuç: "**${city}** şehrinde hava sıcaklığı **${weather}°C** ve **${status}**."</p>`;
+            }, 3000);
+        }
+        
+        // Senaryo 4: Fonksiyonlar Simülasyonu
+        function runFunctionSimulation() {
+            const query = document.getElementById('shoppingQuery').value.trim();
+            const outputDiv = document.getElementById('shoppingOutput');
+            outputDiv.style.opacity = 0;
+            outputDiv.innerHTML = '';
+            
+            if (query === '') {
+                outputDiv.style.opacity = 1;
+                outputDiv.innerHTML = "Lütfen bir alışveriş isteği girin.";
+                return;
+            }
+
+            outputDiv.style.opacity = 1;
+            outputDiv.innerHTML = `
+                <p>🧠 **Adım 1:** Agent, isteği analiz ederek 'alışveriş_listesi_oluştur' fonksiyonunu çağırmaya karar verdi.</p>
+                <p>⚙️ **Adım 2:** Agent, fonksiyon için gereken parametreleri çıkarıyor...</p>
+            `;
+            setTimeout(() => {
+                const items = query.split('için ')[1]?.split(' ve ') || ['çiçek', 'çikolata'];
+                outputDiv.innerHTML += `
+                    <p>📦 **Adım 3:** Agent'tan gelen JSON çıktısı (API çağrısı yapılmadı!):</p>
+                    <pre><code>{
+  "function_name": "alışveriş_listesi_oluştur",
+  "args": {
+    "items": ["${items.join('", "')}"],
+    "occasion": "Anneler Günü"
+  }
+}</code></pre>
+                    <p>🚀 **Adım 4:** Bu JSON çıktısı, **istemci uygulaması** tarafından alınır ve API çağrısı, agent'tan bağımsız olarak yapılır.</p>
+                `;
+            }, 3000);
+        }
+
+        // Senaryo 5: Veri Depoları Simülasyonu
+        function runDataStoreSimulation() {
+            const query = document.getElementById('policyQuery').value.trim();
+            const outputDiv = document.getElementById('policyOutput');
+            outputDiv.style.opacity = 0;
+            outputDiv.innerHTML = '';
+            
+            if (query === '') {
+                outputDiv.style.opacity = 1;
+                outputDiv.innerHTML = "Lütfen bir sorgu girin.";
+                return;
+            }
+
+            outputDiv.style.opacity = 1;
+            outputDiv.innerHTML = `
+                <p>🧠 **Adım 1:** Agent, sorguyu vektörleştirdi. Vektör: [0.1, -0.5, 0.8, ...]</p>
+                <p>📚 **Adım 2:** Vektör, şirket veri deposunda en yakın eşleşmeleri bulmak için aranıyor (RAG).</p>
+            `;
+            setTimeout(() => {
+                outputDiv.innerHTML += `<p>📄 **Adım 3:** Veri deposundan ilgili belgeler (Örn: 'İK_Politikası_2025.pdf') çekildi.</p>`;
+            }, 2500);
+            setTimeout(() => {
+                outputDiv.innerHTML += `
+                    <p>✅ **Adım 4:** Agent, belgeleri analiz ederek bir özet oluşturuyor...</p>
+                    <p>Nihai Yanıt:</p>
+                    <p>Şirketin işe alım süreci, pozisyonun yayınlanması, başvuruların taranması, teknik mülakatlar ve son olarak yönetici mülakatı adımlarını içerir. Bu bilgiler, İK politikanızın en son sürümünden alınmıştır.</p>
+                `;
+            }, 5000);
+        }
+
+        // Senaryo 6: Hedefli Öğrenme Simülasyonu
+        function runLearningSimulation() {
+            const method = document.getElementById('learningMethod').value;
+            const outputDiv = document.getElementById('learningOutput');
+            outputDiv.style.opacity = 0;
+            outputDiv.innerHTML = '';
+
+            let description = '';
+            if (method === 'in-context') {
+                description = `
+                    **🍽️ Yerinde Öğrenme (In-context learning):** Bir şefe, elinde olmayan bir tarif (prompt), birkaç temel malzeme (araçlar) ve örnek yemekler (few-shot examples) verilir. Şef, bu sınırlı bilgilerle yemeği 'anında', tecrübesine dayanarak hazırlar. Model, yeni bir şey öğrenmek için eğitilmez, anlık olarak verilen örneklerden yola çıkar.
+                `;
+            } else if (method === 'retrieval') {
+                description = `
+                    **📖 Geri Çağırmaya Dayalı Öğrenme (Retrieval-based learning):** Şef, elindeki tarifle (prompt) birlikte, iyi donanımlı bir kilerdeki (harici veri depoları) yemek kitaplarından ve malzemelerden (araçlar ve örnekler) dinamik olarak seçim yapar. Bu sayede, hem mevcut hem de güncel bilgilere dayanarak yemeği en iyi şekilde pişirir (RAG).
+                `;
+            } else if (method === 'fine-tuning') {
+                description = `
+                    **🎓 İnce Ayar (Fine-tuning):** Şef, yeni bir mutfakta (belirli bir bilgi alanı) uzmanlaşmak için haftalarca aşçılık okuluna gider. Model, daha büyük ve özel bir veri setiyle önceden eğitilir. Bu, modelin belirli bir alanda çok daha derinlemesine bir uzmanlık kazanmasını sağlar.
+                `;
+            }
+
+            outputDiv.innerHTML = `<p style="animation: fadeIn 0.5s ease-in-out;">${description}</p>`;
+            outputDiv.style.opacity = 1;
+        }
+
+        // Senaryo 7: Agents vs Models Simülasyonu
+        function runVsSimulation() {
+            const modelList = document.getElementById('modelList').children;
+            const agentList = document.getElementById('agentList').children;
+
+            const comparisonData = [
+                { model: 0, agent: 0, text: "Bilgi kaynağı farklıdır. Agent'lar, harici sistemlere bağlanarak bilgi havuzunu genişletir." },
+                { model: 1, agent: 1, text: "Gorev yönetimi farklıdır. Modeller tek seferlik yanıt verirken, Agent'lar çok adımlı görevleri yönetir." },
+                { model: 2, agent: 2, text: "Agent'lar, dış dünyayla etkileşim için araçları kullanır. Modellerde bu yetenek yoktur." },
+                { model: 3, agent: 3, text: "Akıl yürütme stratejisi farklıdır. Agent'lar, karmaşık görevler için akıl yürütme frameworkleri kullanır." }
+            ];
+
+            let vsIndex = 0;
+            const vsInterval = setInterval(() => {
+                if (vsIndex < comparisonData.length) {
+                    // Reset all
+                    for (let i = 0; i < 4; i++) {
+                        modelList[i].style.backgroundColor = 'transparent';
+                        agentList[i].style.backgroundColor = 'transparent';
+                    }
+
+                    const data = comparisonData[vsIndex];
+                    modelList[data.model].style.backgroundColor = '#ffdddd';
+                    agentList[data.agent].style.backgroundColor = '#ddffdd';
+                    vsIndex++;
+                } else {
+                    clearInterval(vsInterval);
+                }
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
